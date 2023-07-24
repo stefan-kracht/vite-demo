@@ -1,34 +1,38 @@
 import "./App.css";
 
-import reactLogo from "./assets/react.svg";
 import { useState } from "react";
-import viteLogo from "/vite.svg";
+
+const apiEndpoint = "/api";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [fetchedData, setFetchedData] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    setFetchedData("");
+    await fetch(apiEndpoint, {
+      method: "GET",
+    })
+      .then(() => {
+        setIsLoading(false);
+        setFetchedData("🥳 fetched some data");
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        setFetchedData(`🫠 ${e}`);
+      });
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>React demo</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <p>{isLoading ? "loading..." : fetchedData}&nbsp;</p>
+        <button disabled={isLoading} onClick={fetchData}>
+          Fetch Data
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
